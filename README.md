@@ -32,6 +32,8 @@ to integrated stress response (ISR) activation in TET2-deficient versus WT HSPCs
 - **Genome-wide dTE does not transfer between studies.** Held-out-study Pearson is 0.01–0.03 for a pooled gene
   signature, −0.08 for sequence features, 0.18 for the nearest single context. What transfers is a small core and
   program-level structure (program recovery r ≈ 0.7–0.9).
+- **TET2 programs and the stress translatome do not intersect beyond chance** in any parsing tried (all pairs,
+  species-matched pairs, core programs, gene overlap); see `docs/assumptions_and_limits.md` §5b.
 - **Substrate-only genotype differences are negligible.** Program-level M1 interactions are all |log2| < 0.1 and
   change sign between TET2 studies; 1 of 72 intervals excludes zero.
 - **Nothing in public data speaks to a genotype-specific translation effect.** That needs the experiment in
@@ -57,7 +59,7 @@ docs/         data_audit, assumptions_and_limits (identifiability memo), methods
               experimental_validation_plan
 src/tet2isr/  contracts, effects, stats, data_ingest/ (synthetic, geo, public adapters), tet2_transcriptome/,
               isr_translation/, modeling/, validation/, reporting/, pipeline, cli
-tests/        22 tests
+tests/        23 tests
 results/      public/ (real run), smoke/ (synthetic), audit/ (GEO records), prediction_priority_table.csv
 reports/      research_report.html (real data), research_report_synthetic_demo.html, executive_summary.md
 ```

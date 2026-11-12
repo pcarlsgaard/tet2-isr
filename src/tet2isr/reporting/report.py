@@ -522,6 +522,23 @@ def build(cfg) -> Path:
                  "genotype-specific translation effect.</p>")
     if synthetic:
         h += ["<h3>Run-specific priority table (top rows)</h3>", _tbl(pri, 16)]
+    if (out / "intersection_pairwise.csv").exists():
+        ip = pd.read_csv(out / "intersection_pairwise.csv")
+        q95 = float((out / "intersection_null_q95.txt").read_text())
+        summ_i = (ip.groupby(["context_class", "species_matched"]).partial_spearman
+                  .agg(n_pairs="count", median_abs=lambda x: x.abs().median(), max_abs=lambda x: x.abs().max()).reset_index())
+        cs = pd.read_csv(out / "intersection_core_sets.csv").dropna(subset=["z"])
+        h += ["<h2>6b. Intersection: TET2 transcriptome programs x stress translatomes</h2>",
+              "<p>Are the genes whose RNA changes with TET2 loss the genes whose translation changes under stress? "
+              "Every TET2 contrast is compared gene-wise with every translatome context. ISR-blocked and gate-failed "
+              f"contexts give the empirical null: 95% of their |partial correlations| are below {q95:.3f}.</p>",
+              _img(out / "figures/fig9_tet2_x_translatome.png"), _tbl(summ_i),
+              "<p class='note'>TET2 core programs (several definitions) against each translatome axis; set mean dTE versus "
+              "expression-matched random sets. Rows with FDR &lt; 0.1:</p>",
+              _tbl(cs[cs.fdr < 0.1].sort_values("p_perm")[["tet2_core", "direction", "n_measured", "isr_axis",
+                                                           "context_class", "mean_dTE", "null_mean", "z", "fdr"]]),
+              "<p class='note'>Overlap of TET2 core genes with the ISR translation core (consistent |dTE| &ge; 0.5 in all "
+              "engaged contexts):</p>", _tbl(pd.read_csv(out / "intersection_overlap_counts.csv"))]
     h += ["<h2>7. Prediction priority table, competing hypotheses and discriminating assays</h2>", _img(f["hyp"]),
           "<p class='note'>Full table: results/prediction_priority_table.csv</p>",
           _tbl(pub[[c for c in ("gene_or_program", "level", "predicted_direction_WT", "dTE_transferred_log2",

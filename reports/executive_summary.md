@@ -27,7 +27,12 @@ genotype difference from substrate effects, and it cannot address a true transla
    pool gives program-level interactions below 0.1 log2 that change sign between TET2 studies (1 of 72 intervals
    excludes zero). Predicted direction is therefore the same in WT and TET2-deficient cells for every listed
    gene and program.
-6. **State-dependent models are not supported.** Three engaged contexts cannot fit them; in simulation the same
+6. **The TET2 transcriptome and the stress translatome do not intersect beyond chance.** Gene-wise correlations
+   between TET2 RNA changes and stress-induced TE changes have median |r| 0.01–0.02 across 182 dataset pairs,
+   species-matched or not; ISR-blocked controls give the same range. TET2 core gene sets overlap the ISR
+   translation core at chance. One single-study lead: *Ddit3* and *Ifrd1* mRNA are lower in Tet2-KO across all six
+   sorted populations of GSE232384, not seen in the other three studies.
+7. **State-dependent models are not supported.** Three engaged contexts cannot fit them; in simulation the same
    models also missed a planted genotype interaction unless ISR dose was known independently.
 
 ## What this means for HRI and venetoclax

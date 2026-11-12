@@ -1,0 +1,141 @@
+tet2_core,direction,n_core_genes,isr_axis,context_class,n_measured,mean_dTE,null_mean,z,p_perm,fdr
+GSE212534_all_populations(within-study),up_in_TET2,5,engaged_ISR_core(mean of engaged contexts),ISR engaged,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE119365|mouse_erythroblast|iron_deficiency,low depth,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",2,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",3,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",2,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE254631|U2OS|arsenite_2h,ISR engaged,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE256237|HCT116|arsenite_1h,low depth,0,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE282509|HeLa|tunicamycin_16h,ISR engaged,2,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",1,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,1,,,,,
+GSE212534_all_populations(within-study),up_in_TET2,5,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,1,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,engaged_ISR_core(mean of engaged contexts),ISR engaged,7,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE119365|mouse_erythroblast|iron_deficiency,low depth,1,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,1,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",13,0.2472807509418768,0.08684458862916075,0.8295726630382094,0.3893053473263368,0.6608695652173913
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",14,0.20903996968942468,0.06915997562329386,0.74958540895359,0.447776111944028,0.6681531029357116
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",8,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,7,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",9,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE254631|U2OS|arsenite_2h,ISR engaged,9,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE256237|HCT116|arsenite_1h,low depth,7,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE282509|HeLa|tunicamycin_16h,ISR engaged,13,-1.2775995457016172,-0.44051152135194466,-2.228655299161559,0.0239880059970015,0.10702341137123746
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",4,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,8,,,,,
+GSE212534_all_populations(within-study),down_in_TET2,22,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,8,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,engaged_ISR_core(mean of engaged contexts),ISR engaged,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency,low depth,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE254631|U2OS|arsenite_2h,ISR engaged,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE256237|HCT116|arsenite_1h,low depth,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE282509|HeLa|tunicamycin_16h,ISR engaged,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,0,,,,,
+GSE232384_all_populations(within-study),up_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,0,,,,,
+GSE232384_all_populations(within-study),down_in_TET2,21,engaged_ISR_core(mean of engaged contexts),ISR engaged,18,0.06095922356961836,-0.012048253244673781,0.7584258732612518,0.4492753623188406,0.6681531029357116
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE119365|mouse_erythroblast|iron_deficiency,low depth,14,-0.11086018207787031,0.01995051371220424,-0.7437926928479139,0.4447776111944028,0.6681531029357116
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,16,-0.21131359342996017,-0.07193359453992261,-0.6936696010361025,0.4847576211894053,0.7028985507246377
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",18,-0.22627139535600907,-0.03691203447739805,-2.385651145811478,0.021989005497251374,0.10702341137123746
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",18,-0.05856553803638019,-0.00098027417919477,-0.8892909014146623,0.3778110944527736,0.6608695652173913
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",17,-0.12839070846693482,0.07613819478122848,-3.2937921754217285,0.00399800099950025,0.028985507246376812
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,17,-0.22122298629662113,0.05065145028151497,-4.051525178514445,0.0024987506246876563,0.024154589371980676
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",17,0.3659525512461528,0.03424478282588697,1.5596288343971219,0.11294352823588207,0.3119392684610076
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE254631|U2OS|arsenite_2h,ISR engaged,19,0.10011258147902714,-0.07632752438704679,0.8289948832609361,0.4122938530734633,0.6642512077294687
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE256237|HCT116|arsenite_1h,low depth,17,0.26858870399454804,-0.24383783577621798,2.0740266704851003,0.02948525737131434,0.12215320910973083
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE282509|HeLa|tunicamycin_16h,ISR engaged,20,-0.10145196060577008,0.06535658870450685,-1.0417987940807887,0.296351824087956,0.5610098176718092
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",16,0.08069232640317335,-0.020377829889434405,1.2672013901030643,0.20689655172413793,0.46711259754738016
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,19,0.134780279447538,-0.025341311552672087,1.8764654051687637,0.059470264867566215,0.21557971014492752
+GSE232384_all_populations(within-study),down_in_TET2,21,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,19,-0.015591175489607936,-0.03349483526695654,0.32184315918241463,0.7621189405297352,0.8840579710144928
+GSE287524_all_populations(within-study),up_in_TET2,0,engaged_ISR_core(mean of engaged contexts),ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency,low depth,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE254631|U2OS|arsenite_2h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE256237|HCT116|arsenite_1h,low depth,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE282509|HeLa|tunicamycin_16h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),up_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,engaged_ISR_core(mean of engaged contexts),ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency,low depth,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE254631|U2OS|arsenite_2h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE256237|HCT116|arsenite_1h,low depth,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE282509|HeLa|tunicamycin_16h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,0,,,,,
+GSE287524_all_populations(within-study),down_in_TET2,0,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,0,,,,,
+cross_species_target_populations,up_in_TET2,11,engaged_ISR_core(mean of engaged contexts),ISR engaged,7,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE119365|mouse_erythroblast|iron_deficiency,low depth,5,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,7,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",9,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",9,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",8,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,6,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",8,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE254631|U2OS|arsenite_2h,ISR engaged,7,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE256237|HCT116|arsenite_1h,low depth,7,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE282509|HeLa|tunicamycin_16h,ISR engaged,10,0.08611230825819156,-0.01014213690495616,0.3277845680914119,0.736631684157921,0.8819875776397516
+cross_species_target_populations,up_in_TET2,11,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",8,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,8,,,,,
+cross_species_target_populations,up_in_TET2,11,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,8,,,,,
+cross_species_target_populations,down_in_TET2,32,engaged_ISR_core(mean of engaged contexts),ISR engaged,21,0.026075281123262052,0.022517948154600106,0.038001228394695115,0.975512243878061,0.975512243878061
+cross_species_target_populations,down_in_TET2,32,GSE119365|mouse_erythroblast|iron_deficiency,low depth,10,0.06629825862424185,-0.0232197257896593,0.38936603041244083,0.6911544227886057,0.8529139685476411
+cross_species_target_populations,down_in_TET2,32,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,13,-0.3623231098576689,-0.03883513626638536,-1.3106928352810572,0.17891054472763618,0.4323671497584541
+cross_species_target_populations,down_in_TET2,32,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",25,0.036801166212659046,-0.014052809979618839,0.6396403403567891,0.5282358820589705,0.7205931917762048
+cross_species_target_populations,down_in_TET2,32,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",27,0.23296619154110465,0.003477219956194136,3.1510195247385844,0.005497251374312844,0.0318840579710145
+cross_species_target_populations,down_in_TET2,32,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",24,0.011408910240030592,-0.004626129134867717,0.25354669276077163,0.7931034482758621,0.890746934225195
+cross_species_target_populations,down_in_TET2,32,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,21,-0.06478916275484545,0.0029716778725040463,-0.9748566061465579,0.29985007496251875,0.5610098176718092
+cross_species_target_populations,down_in_TET2,32,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",24,-0.16952087014654962,-0.1347673871321528,-0.16928715833524655,0.8545727136431784,0.9178743961352658
+cross_species_target_populations,down_in_TET2,32,GSE254631|U2OS|arsenite_2h,ISR engaged,24,0.31969770360713007,-0.019891606930182347,1.7706276978560576,0.07596201899050475,0.24476650563607086
+cross_species_target_populations,down_in_TET2,32,GSE256237|HCT116|arsenite_1h,low depth,21,0.06023033319218407,0.10951485480394726,-0.21191148427649478,0.8405797101449275,0.9178743961352658
+cross_species_target_populations,down_in_TET2,32,GSE282509|HeLa|tunicamycin_16h,ISR engaged,28,-0.21214659366781372,-0.012666089894334839,-1.2288591921126268,0.20939530234882558,0.46711259754738016
+cross_species_target_populations,down_in_TET2,32,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",20,0.03977372856013224,-0.011788294569485231,0.6154121964510969,0.5342328835582209,0.7205931917762048
+cross_species_target_populations,down_in_TET2,32,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,25,-0.0712816883822595,0.026478293598071197,-1.2138389399361273,0.2178910544727636,0.4680622651637144
+cross_species_target_populations,down_in_TET2,32,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,25,-0.1813925548460152,0.014581556938392911,-3.2615242573214815,0.0009995002498750624,0.014492753623188406
+mouse_HSPC_target_populations,up_in_TET2,52,engaged_ISR_core(mean of engaged contexts),ISR engaged,36,0.20541800608355137,-0.002182572625436655,3.0908719161521714,0.001999000499750125,0.02318840579710145
+mouse_HSPC_target_populations,up_in_TET2,52,GSE119365|mouse_erythroblast|iron_deficiency,low depth,21,-0.308563199547651,0.02151335451268456,-2.2607487657018157,0.022988505747126436,0.10702341137123746
+mouse_HSPC_target_populations,up_in_TET2,52,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,28,0.27661443644671435,-0.0575835447900476,2.054721605262626,0.04147926036981509,0.1603864734299517
+mouse_HSPC_target_populations,up_in_TET2,52,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",45,-0.054349773769903326,-0.0020786085257862384,-0.900268676063962,0.3548225887056472,0.6431159420289856
+mouse_HSPC_target_populations,up_in_TET2,52,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",44,-0.005579061909301283,0.011378631918389712,-0.3117169829493447,0.7451274362818591,0.8819875776397516
+mouse_HSPC_target_populations,up_in_TET2,52,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",34,0.03781939957492364,0.033145800117858136,0.09335067923469739,0.9150424787606197,0.9554865424430642
+mouse_HSPC_target_populations,up_in_TET2,52,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,31,-0.05309120869406715,0.02430059431422272,-1.4823691497729048,0.13093453273363317,0.3451910408432147
+mouse_HSPC_target_populations,up_in_TET2,52,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",43,0.16990561273607116,-0.08156201728473575,1.70709269795739,0.0864567716141929,0.2639206712433257
+mouse_HSPC_target_populations,up_in_TET2,52,GSE254631|U2OS|arsenite_2h,ISR engaged,42,-0.03119856724468943,-0.06517722358802988,0.24087053495950206,0.7986006996501749,0.890746934225195
+mouse_HSPC_target_populations,up_in_TET2,52,GSE256237|HCT116|arsenite_1h,low depth,31,0.2886491523385003,-0.06087974341513028,1.8496068033085231,0.06446776611694154,0.21994884910485935
+mouse_HSPC_target_populations,up_in_TET2,52,GSE282509|HeLa|tunicamycin_16h,ISR engaged,44,0.44081701461306777,-0.009238214005102982,3.600886110818309,0.0004997501249375312,0.014492753623188406
+mouse_HSPC_target_populations,up_in_TET2,52,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",38,-0.10618907209948883,-0.01708963660182426,-1.5708882828889859,0.1089455272363818,0.3119392684610076
+mouse_HSPC_target_populations,up_in_TET2,52,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,42,0.20560385099237818,-0.004335937687234466,3.5665786305610525,0.0009995002498750624,0.014492753623188406
+mouse_HSPC_target_populations,up_in_TET2,52,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,42,0.18812679415636063,0.0036928451549931114,4.223263022201213,0.0004997501249375312,0.014492753623188406
+mouse_HSPC_target_populations,down_in_TET2,61,engaged_ISR_core(mean of engaged contexts),ISR engaged,26,-0.13521404387866404,-0.03470493418659599,-1.1046986639209941,0.25837081459270367,0.5167416291854073
+mouse_HSPC_target_populations,down_in_TET2,61,GSE119365|mouse_erythroblast|iron_deficiency,low depth,5,,,,,
+mouse_HSPC_target_populations,down_in_TET2,61,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,ISR-blocked control,7,,,,,
+mouse_HSPC_target_populations,down_in_TET2,61,GSE129757|LN308_glioma|tunicamycin_2h,"stress, ISR gate not passed",43,0.09052756696218174,0.04609186397510466,0.5368454684240058,0.584207896051974,0.7700922266139657
+mouse_HSPC_target_populations,down_in_TET2,61,GSE129757|LN308_glioma|tunicamycin_6h,"stress, ISR gate not passed",45,0.2884554126216608,0.0417592358169188,3.230796292992576,0.0034982508745627187,0.028985507246376812
+mouse_HSPC_target_populations,down_in_TET2,61,GSE193945|mouse_SCC|bortezomib_4.5h,"stress, ISR gate not passed",33,-0.09137116048404079,-0.056114785568316596,-0.6319300802517959,0.5152423788105946,0.7205931917762048
+mouse_HSPC_target_populations,down_in_TET2,61,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,ISR-blocked control,28,-0.0040659962692717955,-0.010639166032137272,0.09934659570693188,0.9225387306346826,0.9554865424430642
+mouse_HSPC_target_populations,down_in_TET2,61,GSE227766|IMR90_fibroblast|thapsigargin_3h,"stress, ISR gate not passed",40,-0.49411806810282266,-0.4078725094170324,-0.47014064778445047,0.6351824087956022,0.8008821676118462
+mouse_HSPC_target_populations,down_in_TET2,61,GSE254631|U2OS|arsenite_2h,ISR engaged,36,-0.20915767378771732,-0.024596935574903184,-1.1461807547991583,0.25087456271864067,0.5167416291854073
+mouse_HSPC_target_populations,down_in_TET2,61,GSE256237|HCT116|arsenite_1h,low depth,34,-0.10972398429120357,0.45709755642788635,-2.8326611318204153,0.004997501249375313,0.0318840579710145
+mouse_HSPC_target_populations,down_in_TET2,61,GSE282509|HeLa|tunicamycin_16h,ISR engaged,44,-0.20962560979423078,-0.21632606972293145,0.0398574647035644,0.9700149925037481,0.975512243878061
+mouse_HSPC_target_populations,down_in_TET2,61,GSE291029|RPE1_TP53KO|WEE1i_24h,"stress, ISR gate not passed",26,-0.0068367159023020605,-0.05130629350707281,0.5255156231746608,0.5992003998001,0.7723027375201288
+mouse_HSPC_target_populations,down_in_TET2,61,GSE65778|HEK293T|tunicamycin_1h,ISR engaged,34,-0.08772555953471728,0.021550121587779983,-1.433524198076124,0.14842578710644677,0.37429111531190923
+mouse_HSPC_target_populations,down_in_TET2,61,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,ISR-blocked control,35,0.02027309508857045,0.06957556482870828,-0.8270820384469757,0.3988005997001499,0.6608695652173913

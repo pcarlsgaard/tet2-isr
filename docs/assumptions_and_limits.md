@@ -74,6 +74,34 @@ targets); supplying the true dose recovered it partially (0.27, interval spannin
 - **M2 is not fit-able**: 3 contexts, 3 state covariates, and state scores that are confounded with library
   chemistry (poly-A, total RNA, 3′-tag).
 
+
+## 5b. Intersection of TET2 transcriptome programs with stress translatomes
+
+`make intersect CONFIG=configs/public.yml` (`src/tet2isr/intersection.py`; outputs `results/public/intersection_*.csv`,
+`tet2_core_programs.csv`, figure 9 in the report). Three parsings:
+
+1. **Every TET2 contrast × every translatome context** (14 × 13 pairs, species-matched pairs flagged), gene-wise
+   partial rank correlation of TET2 log2FC with stress dTE, controlling for expression, CDS length, GC and 3′UTR
+   length. ISR-blocked and gate-failed contexts supply the empirical null (95th percentile of |r| = 0.054).
+   Result: median |r| is 0.01–0.02 in every class. The largest value is 0.13 (post-transplant mouse HSC × HeLa
+   tunicamycin 16 h, cross-species). Mouse-matched pairs reach 0.11 only against the low-depth erythroblast set.
+2. **TET2 core programs × translatome axes.** Cores: cross-species target populations (43 genes), mouse HSPC
+   target populations (113), all populations within one study (27, 21; human 0). Genes up in the mouse HSPC core
+   have a slightly higher mean dTE under ER stress (+0.2 log2, z ≈ 3–3.6), but the same shift appears with
+   tunicamycin + ISRIB (+0.19, z = 4.2), so it is not ISR-dependent. The set is dominated by long chromatin and
+   RNA-processing genes (NIPBL, CHD8, XRN1, JMJD1C, DOT1L).
+3. **Gene-level overlap with the ISR translation core** (consistent |dTE| ≥ 0.5 in all engaged contexts).
+   Overlaps are at chance for the cross-species (0 vs 0.6 expected) and mouse HSPC cores (1 vs 1.2). One study
+   stands out: in GSE232384, *Ddit3* and *Ifrd1* mRNA are lower in Tet2-KO in all six sorted populations (about −1
+   to −3 log2). Both are translationally induced ISR targets. The other three studies show no such change
+   (|log2FC| ≤ 0.6, mixed sign), and both are stress/immediate-early transcripts that respond to sort handling, so
+   this is a single-study observation, not a TET2 program.
+
+**Reading.** With the data that exist, the TET2 transcriptome and the stress translatome do not intersect beyond
+chance, in any parsing. The limiting factor is the TET2 side: there is no core TET2 program that replicates across
+studies, so there is little to intersect. The one lead worth a direct check is basal *Ddit3*/*Ifrd1*/ATF4-target
+mRNA in freshly sorted WT versus Tet2-KO HSPCs, with handling matched.
+
 ## 6. Limits of the current implementation
 - Differential TE uses log-CPM linear models with variance moderation, not a negative-binomial GLM. Confirm with
   DESeq2 `deltaTE` or anota2seq on real counts.

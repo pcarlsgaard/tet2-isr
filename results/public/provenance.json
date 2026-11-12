@@ -1,6 +1,6 @@
 {
  "run_name": "public",
- "generated_utc": "2026-11-12T13:42:47+00:00",
+ "generated_utc": "2026-11-12T13:49:48+00:00",
  "config": {
   "run_name": "public",
   "data_root": "data/processed/public",
@@ -32,7 +32,7 @@
   "out": "results/public"
  },
  "data_is_synthetic": false,
- "git_commit": "5b309d0008cc8e84c816408499e108bcedbfa11f",
+ "git_commit": "8a488fafaeac9398bc2f12d49029c4ccd4ffdfb3",
  "software": {
   "tet2isr": "0.1.0",
   "python": "3.13.5",
@@ -76,11 +76,17 @@
   "results/public/figures/fig6_genotype_by_isr.png": "8e6199b7734cfbc6f13371fea2d028f0e21ef4111692fbea4c132c667e14dc30",
   "results/public/figures/fig7_hypotheses.png": "8f51a68f7e8f91170eda9e9e26bfedbdec7ae065aa2116c1978d35ce67f2f134",
   "results/public/figures/fig8_reference_set.png": "ef49e7d1492b5025841454ff8ca7480b3698ff9253fa1b98d43d939ae4dd2963",
+  "results/public/figures/fig9_tet2_x_translatome.png": "4e7b8702ee05d60676cb5ccb0f1206bfee51e38041496b9d94c0463718a38acf",
   "results/public/gene_family_leakage.csv": "b6e53ab65e35be7d9c720ec4b6cc7dd628ac097903117877bd463f2982ecfa02",
   "results/public/gene_predictions.csv": "25547b9a03a796db55d12f42291fc1a610dd65348a54a90e137550be49ee7a98",
   "results/public/heldout_metrics.csv": "08ef5c27961b27368743f081568e9555d040e4e6cc943dada2ef26834a0b5520",
   "results/public/heldout_summary.csv": "b2d1db14221ee85d1688e9991ee7fd03456a1ac9bdb19af7a96e08af89869ed4",
   "results/public/holdout_validation.NOT_AVAILABLE.txt": "3b3b8601bdd37611eab716769e8f571b38db15d0bfdbd5103439cce4bf2e4e62",
+  "results/public/intersection_core_sets.csv": "0fdcc8af1c81195e0a397125f85d9c8ce26bb49e16b57846cc33cba2c8094963",
+  "results/public/intersection_gene_overlap.csv": "79ad774148b1390fb842f2fcec5407f6be6405478e2d69e5f5f73b52608a4b23",
+  "results/public/intersection_null_q95.txt": "3172f14b32d9d45a93eee612a2547396a21e8d0361912639ca9846c911cf1127",
+  "results/public/intersection_overlap_counts.csv": "b3d22ae316fd88b45ba1dc37d7b1c35b7c25e986699a30b3ef1038a604b4d3a1",
+  "results/public/intersection_pairwise.csv": "a12221c15814a8c0cf49cfb255ec319a3d38865a6d93de19374ab0b40b447e46",
   "results/public/isr_context_table.tsv": "c24a7128878d4921917b4ae261cb70828ac21a7e4f1a7664a9e44b4c3d7187a5",
   "results/public/isr_engagement.tsv": "4c94ccc402c686fcbc6d31d33c71455168ccf42676413b04724a2c81e117534b",
   "results/public/isr_library_qc.tsv": "c242f07365b686ebe194cb002fd7a8094907cdd8cbbfb14ead1455e285db0798",
@@ -97,6 +103,7 @@
   "results/public/prediction_priority_table.csv": "614a26f7d7575aa92bfebc3668c67b6be34beb65a3e26c435f99d8d82b4aa68f",
   "results/public/reference_set_check.csv": "bb6d6d74851d48f0d7d5a721c90922fe3b8a7dc9a50f620e292cda4169575901",
   "results/public/tet2_composition.tsv": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+  "results/public/tet2_core_programs.csv": "561b44cd2b0fea466a8e2b7428a7183ce5367203e480748f36cbed2799f06b81",
   "results/public/tet2_cross_study_spearman.csv": "1584af5ee61ee012fb3edea12dbb1b8bd11c4f4ce3a833c32f50373b43becd71",
   "results/public/tet2_gene_contrasts_meta.parquet": "fbb46ee1fc6fd754047fdc03277a98d85756d4bdb832975d52c2d75954bad9b2",
   "results/public/tet2_gene_contrasts_per_study.parquet": "8ee2b0b4ef63d7436f1b998e677baf677fd18dff998b5e151548d4703c36a57a",

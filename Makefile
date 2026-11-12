@@ -3,7 +3,7 @@ CONFIG ?= configs/smoke.yml
 PY := .venv/bin/python
 RUN := PYTHONPATH=src $(PY) -m tet2isr.cli
 
-.PHONY: public build-public setup smoke-test test audit-data download-processed analyze-tet2 analyze-isr fit-baselines evaluate report clean
+.PHONY: intersect public build-public setup smoke-test test audit-data download-processed analyze-tet2 analyze-isr fit-baselines evaluate report clean
 setup:
 	python3 -m venv .venv && .venv/bin/pip install -q -r requirements.lock && .venv/bin/pip install -q -e . --no-deps
 test:
@@ -26,6 +26,8 @@ fit-baselines:            ## M0 + M1 (+ 2x2 example); needs analyze-isr
 	$(RUN) fit-baselines --config $(CONFIG)
 evaluate:                 ## M2/M3, held-out splits, ablations, leakage, genotype predictions
 	$(RUN) evaluate --config $(CONFIG)
+intersect:                ## TET2 transcriptome programs x stress translatomes
+	$(RUN) intersect --config $(CONFIG)
 report:
 	$(RUN) report --config $(CONFIG)
 clean:

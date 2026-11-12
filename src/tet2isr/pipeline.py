@@ -215,6 +215,22 @@ def stage_evaluate(cfg):
             "No direct genotype x ISR translatome in this data root. I_TE predictions are unvalidated.\n")
 
 
+def stage_intersect(cfg):
+    """TET2 transcriptome programs x stress translatomes (needs analyze-isr, fit-baselines, evaluate)."""
+    from . import intersection
+    out, root = cfg["out"], Path(cfg["data_root"])
+    if not (out / "isr_translation_signatures_all.parquet").exists():
+        return
+    species = pd.read_csv(root / "isr/contexts_all.tsv", sep="\t").set_index("study_id").species.to_dict()
+    for d in sorted((root / "tet2").iterdir()):
+        sp = pd.read_csv(d / "samples.tsv", sep="\t").species.iloc[0]
+        species[d.name] = "mouse" if "mouse" in sp else "human"
+    r = intersection.run(out, pd.read_parquet(root / "genes.parquet"), species, seed=cfg["seed"])
+    (out / "figures").mkdir(exist_ok=True)
+    intersection.figure(r["pairs"], out / "figures/fig9_tet2_x_translatome.png")
+    (out / "intersection_null_q95.txt").write_text(f"{r['null_q95']:.4f}\n")
+
+
 def write_provenance(cfg):
     out = cfg["out"]
     files = {str(p): _sha(p) for p in sorted(out.rglob("*")) if p.is_file() and p.name != "provenance.json"}

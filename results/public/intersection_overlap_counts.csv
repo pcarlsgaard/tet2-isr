@@ -1,0 +1,6 @@
+tet2_core,universe,n_tet2_core,n_isr_core,overlap,expected,p_hypergeom,genes
+GSE212534_all_populations(within-study),8275,7,164,0,0.1387311178247734,1.0,
+GSE232384_all_populations(within-study),7810,18,148,2,0.341101152368758,0.044755580865930365,DDIT3;IFRD1
+GSE287524_all_populations(within-study),8934,0,194,0,0.0,,
+cross_species_target_populations,9223,28,203,0,0.616285373522715,1.0,
+mouse_HSPC_target_populations,8424,62,165,1,1.2143874643874644,0.7079834935022562,C1orf53

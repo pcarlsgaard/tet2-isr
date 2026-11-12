@@ -70,6 +70,13 @@ pleiotropic and by whether the test cell type was seen. Gene-family leakage: seq
 family-grouped folds, plus a paralog-copy upper bound. Genotype generalisation: predictions compared with a
 reserved direct 2×2 translatome at gene and program level (synthetic only at present).
 
+## Intersection analysis (`intersection.py`)
+Pairwise partial Spearman between each TET2 contrast and each context's dTE (covariates: WT expression, CDS
+length, CDS and 5′UTR GC, 3′UTR length). TET2 cores by random-effects meta-analysis with the replication rule
+(independent studies) or by averaging populations within a study (shared animals; no pooling of evidence). Set
+tests compare a core's mean dTE with 2,000 expression-decile-matched random sets. Overlap with the ISR translation
+core by hypergeometric test. ISR-blocked and gate-failed contexts are the empirical null.
+
 ## Reproducibility
 `requirements.lock`, `environment.yml`, `Dockerfile`; seeds in configs; `results/<run>/provenance.json` holds
 config, software versions, git commit and SHA-256 of every input and output. Downloads log URL, time and checksum.

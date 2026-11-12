@@ -85,3 +85,12 @@ def test_gene_space_mapping_sums_and_fills():
     df = pd.DataFrame({"s": [1, 2, 3, 4]}, index=["a", "b", "c", "zz"])
     out = _to_gene_space(df, pd.Series({"a": "G1", "b": "G1", "c": "G2"}), pd.Index(["G1", "G2", "G3"]))
     assert list(out.s) == [3, 3, 0]          # summed per gene, unmapped dropped, absent genes zero
+
+
+def test_partial_spearman_removes_shared_technical_axis():
+    from tet2isr.intersection import _partial_spearman
+    rng = np.random.default_rng(1)
+    z = pd.Series(rng.normal(size=3000))                      # shared covariate (e.g. gene length)
+    x, y = z + rng.normal(size=3000), z + rng.normal(size=3000)
+    raw, part, n = _partial_spearman(x, y, pd.DataFrame({"z": z}))
+    assert raw > 0.4 and abs(part) < 0.06 and n == 3000
