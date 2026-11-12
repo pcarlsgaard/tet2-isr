@@ -199,3 +199,65 @@ def figure(pairs: pd.DataFrame, path):
     fig.savefig(path, dpi=200, bbox_inches="tight")
     plt.close(fig)
     return path
+
+
+def quadrants(out: Path, genes: pd.DataFrame, min_fc: float = 0.5, min_dte: float = 0.5) -> dict:
+    """Directional hypotheses: (A) TET2 loss lowers the mRNA AND the ISR lowers its TE ('double suppression');
+    (B) TET2 loss raises the mRNA AND the ISR raises its TE ('amplification').  Under the M1 assumption the
+    combined log2 change in synthesis potential (TET2+ISR vs WT basal) is log2FC_TET2 + dTE.
+
+    TET2 side: each contrast (nominal p < 0.05, |log2FC| >= min_fc) and each core program.
+    ISR side: mean dTE over engaged contexts, same sign in all of them, |mean| >= min_dte.
+    Control axis: the ISR-blocked tunicamycin+ISRIB context, same thresholds on one context.
+    Fisher tests ask whether concordant quadrants are over-represented; they cannot show fitness effects."""
+    out = Path(out)
+    sym = genes.set_index("gene_id").symbol
+    per = pd.read_parquet(out / "tet2_gene_contrasts_per_study.parquet")
+    per["unit"] = per.study_id + "|" + per.compartment
+    sig = pd.read_parquet(out / "isr_translation_signatures_all.parquet")
+    eng = pd.read_csv(out / "isr_engagement.tsv", sep="\t").set_index("context_id").engaged
+    D = sig.pivot(index="gene_id", columns="context_id", values="dTE_log2fc")
+    D = D - D.median()
+    Y = D[[c for c in D.columns if eng.get(c, False)]].dropna()
+    same = (Y > 0).all(axis=1) | (Y < 0).all(axis=1)
+    axes = {"engaged_ISR": Y.mean(axis=1).where(same & (Y.mean(axis=1).abs() >= min_dte))}
+    blocked = [c for c in D.columns if "ISRIB" in c]
+    if blocked:
+        b = D[blocked[0]].reindex(Y.index)
+        axes["ISR_blocked_control(Tm+ISRIB)"] = b.where(b.abs() >= min_dte)
+    cores = pd.read_csv(out / "tet2_core_programs.csv")
+    tsets = {u: d[(d.pvalue < 0.05) & (d.log2fc.abs() >= min_fc)].set_index("gene_id").log2fc for u, d in per.groupby("unit")}
+    tsets.update({f"core:{c}": d[d.in_core].set_index("gene_id").log2fc for c, d in cores.groupby("core")})
+    measured = {u: set(d.gene_id) for u, d in per.groupby("unit")}
+    measured.update({f"core:{c}": set(d.gene_id) for c, d in cores.groupby("core")})
+    rows, cand = [], []
+    for name, t in tsets.items():
+        for ax_name, ax in axes.items():
+            uni = Y.index.intersection(list(measured[name]))
+            a = ax.reindex(uni).dropna()
+            g = a.index.intersection(t.index)
+            tt = t.reindex(g)
+            q = dict(down_down=int(((tt < 0) & (a[g] < 0)).sum()), up_up=int(((tt > 0) & (a[g] > 0)).sum()),
+                     down_up=int(((tt < 0) & (a[g] > 0)).sum()), up_down=int(((tt > 0) & (a[g] < 0)).sum()))
+            conc, disc = q["down_down"] + q["up_up"], q["down_up"] + q["up_down"]
+            odds, p = sps.fisher_exact([[q["up_up"], q["up_down"]], [q["down_up"], q["down_down"]]]) if conc + disc else (np.nan, np.nan)
+            # expected joint hits if TET2 and ISR gene sets were independent
+            exp = len(t.index.intersection(uni)) * len(a) / max(len(uni), 1)
+            rows.append(dict(tet2_set=name, isr_axis=ax_name, universe=len(uni), n_tet2=len(t.index.intersection(uni)),
+                             n_isr=len(a), joint=conc + disc, joint_expected=round(exp, 1), **q,
+                             sign_concordance_odds_ratio=odds, p_fisher=p))
+            if ax_name == "engaged_ISR":
+                for gid in g:
+                    quad = ("down_down" if tt[gid] < 0 and a[gid] < 0 else "up_up" if tt[gid] > 0 and a[gid] > 0 else
+                            "down_up" if tt[gid] < 0 else "up_down")
+                    cand.append(dict(gene_id=gid, symbol=sym.get(gid), tet2_set=name, quadrant=quad,
+                                     tet2_log2fc=tt[gid], isr_dTE_mean=a[gid], combined_log2_S=tt[gid] + a[gid]))
+    counts = pd.DataFrame(rows)
+    cand = pd.DataFrame(cand)
+    if len(cand):
+        n = cand[~cand.tet2_set.str.startswith("core:")].assign(study=lambda d: d.tet2_set.str.split("|").str[0])
+        rep = n.groupby(["gene_id", "quadrant"]).study.nunique().rename("n_independent_studies_same_quadrant")
+        cand = cand.merge(rep.reset_index(), on=["gene_id", "quadrant"], how="left")
+    counts.to_csv(out / "intersection_quadrant_counts.csv", index=False)
+    cand.to_csv(out / "intersection_quadrant_candidates.csv", index=False)
+    return dict(counts=counts, candidates=cand)

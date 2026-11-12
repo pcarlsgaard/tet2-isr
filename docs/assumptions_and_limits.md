@@ -102,6 +102,27 @@ chance, in any parsing. The limiting factor is the TET2 side: there is no core T
 studies, so there is little to intersect. The one lead worth a direct check is basal *Ddit3*/*Ifrd1*/ATF4-target
 mRNA in freshly sorted WT versus Tet2-KO HSPCs, with handling matched.
 
+## 5c. Directional quadrants (double suppression / amplification)
+
+Hypotheses: (A) TET2 loss lowers an mRNA and the ISR lowers its TE; (B) TET2 loss raises an mRNA and the ISR
+raises its TE. `intersection.quadrants` (`intersection_quadrant_counts.csv`, `intersection_quadrant_candidates.csv`).
+TET2 side: nominal p < 0.05 and |log2FC| ≥ 0.5 per contrast. ISR side: same sign in all engaged contexts and
+|mean dTE| ≥ 0.5. Control axis: tunicamycin + ISRIB.
+
+- Joint hits are at the number expected by chance in almost every contrast (LT-HSC 61 vs 60 expected).
+- Sign concordance is enriched in the GSE232384 progenitor populations (odds ratio 3.5–10.6), **but equally on
+  the ISRIB-blocked axis** (3.3–11.5), so it is not ISR-dependent. It reflects a shared gene class (ER and
+  secretory-pathway transcripts) that is lower in those KO samples and loses ribosomes under tunicamycin with or
+  without the ISR.
+- Stem-cell contrasts: LT-HSC 17 down/down, 20 up/up, 24 discordant (odds ratio 2.4, p = 0.13). Post-transplant
+  HSC: 22 down/down of 29 joint genes (19 expected), 3 on the blocked axis.
+- Genes in the same concordant quadrant in three independent studies: MCUB and S1PR3 (down/down), EPPK1 (up/up).
+  In two or more with at least one HSC/LSK contrast: down/down includes CLU, GAS6, IL6R, CCNE1, SCAMP5, MLF1;
+  up/up includes ATF5, EEF2K, MLLT3, NFIA, LIG4, POLQ. With about 1,100 gene-contrast hits, this many
+  recurrences is expected by chance; they are candidates to test, not findings.
+- None of this bears on fitness. The quadrants say what would be doubly lowered or raised under the M1 assumption;
+  whether that helps a stem cell needs a functional readout.
+
 ## 6. Limits of the current implementation
 - Differential TE uses log-CPM linear models with variance moderation, not a negative-binomial GLM. Confirm with
   DESeq2 `deltaTE` or anota2seq on real counts.

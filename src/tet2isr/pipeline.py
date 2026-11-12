@@ -228,6 +228,7 @@ def stage_intersect(cfg):
     r = intersection.run(out, pd.read_parquet(root / "genes.parquet"), species, seed=cfg["seed"])
     (out / "figures").mkdir(exist_ok=True)
     intersection.figure(r["pairs"], out / "figures/fig9_tet2_x_translatome.png")
+    intersection.quadrants(out, pd.read_parquet(root / "genes.parquet"))
     (out / "intersection_null_q95.txt").write_text(f"{r['null_q95']:.4f}\n")
 
 
