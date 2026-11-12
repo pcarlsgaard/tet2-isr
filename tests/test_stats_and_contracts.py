@@ -78,3 +78,10 @@ def test_three_way_interaction_matches_difference_of_dtes(world):
     smp = pd.read_csv(h / "samples.tsv", sep="\t")
     o = dte.genotype_by_isr_dte(pd.read_parquet(h / "counts.parquet"), smp)
     assert np.allclose(o.I_TE, o.dTE_TET2 - o.dTE_WT)
+
+
+def test_gene_space_mapping_sums_and_fills():
+    from tet2isr.data_ingest.public import _to_gene_space
+    df = pd.DataFrame({"s": [1, 2, 3, 4]}, index=["a", "b", "c", "zz"])
+    out = _to_gene_space(df, pd.Series({"a": "G1", "b": "G1", "c": "G2"}), pd.Index(["G1", "G2", "G3"]))
+    assert list(out.s) == [3, 3, 0]          # summed per gene, unmapped dropped, absent genes zero

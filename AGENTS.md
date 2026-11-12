@@ -12,6 +12,11 @@
 - Negative controls, held-out sets and unusable sources stay in the report.
 - Blocked download or tool: continue smaller, record the blocker and its effect on inference.
 
+## Added from the public-data run
+- A stress condition is not an ISR condition until the reference targets respond (engagement gate).
+- A meta-analysis hit carried by one small study is not a replicated finding.
+- Do not relax the depth rule or the gate to admit a dataset you would like to use.
+
 ## Data contract
 `src/tet2isr/contracts.py` is the single interface between ingestion and analysis. A new source (GEO series or
 in-house WT/Tet2/HRI/VEN data) is added by writing an adapter that emits those tables; no analysis code changes.

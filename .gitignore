@@ -4,5 +4,4 @@ __pycache__/
 .pytest_cache/
 data/raw/
 data/processed/
-results/audit/
-results/public/
+results/public/*.parquet

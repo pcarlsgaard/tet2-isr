@@ -9,12 +9,28 @@ sheet; no duplicate IDs; each ISR context has ≥2 biological replicates in both
 series fails). Mouse→human IDs use one-to-one orthologs only; ambiguous pairs are dropped and counted
 (`data_ingest/orthologs.py`). Species are analysed separately and joined at the effect-size level.
 
+## Public-data ingestion (`data_ingest/public.py`)
+Gene universe: 19,354 protein-coding genes with an Ensembl-canonical transcript (release 113). Mouse genes map
+through one-to-one MGI homology classes. Legacy UCSC IDs (GSE65778) are matched on version-less accession; RefSeq
+rows are summed per gene. Sample-to-arm assignments are written out in the adapter and were read from the GEO
+sample records. Depth rule: every arm needs ≥2 libraries with ≥3×10⁵ assigned reads, otherwise the context is
+excluded from training and kept as descriptive.
+
+## ISR engagement gate (`modeling.isr_engagement`)
+A context defines the ISR signature only if the reference uORF-target set has mean dTE ≥ 0.5 log2 (relative to
+the context median) with one-sided t-test p < 0.05 across reference genes. Thresholds are in `configs/public.yml`.
+Contexts that fail are scored against the signature as a negative control (`unengaged_context_check.csv`). Each
+stress signature is also compared with its ISR-blocked counterpart (ISRIB, eIF2α-S51A, Hri-KO;
+`isr_specificity.csv`).
+
 ## Basal TET2 contrasts (`tet2_transcriptome/analysis.py`)
 Single-cell data are summed to sample × compartment pseudobulks (min 10 cells). Per study and compartment:
 `log2CPM ~ genotype`, OLS with empirical-Bayes variance moderation (Smyth 2004), BH FDR. One column is one
 independent biological replicate; fewer than 2 per genotype is an error. Composition (compartment fractions per
 sample) is exported separately. Across studies: DerSimonian–Laird random effects per gene, reporting τ, I², Q and
-the number of studies agreeing in sign.
+the number of studies agreeing in sign. Because inverse-variance weights can be dominated by one small study,
+each gene also gets the heaviest study's weight share and a leave-heaviest-study-out estimate; `replicated` means
+FDR < 0.05, k ≥ 3, same sign in ≥3 studies, and p < 0.05 without the heaviest study.
 
 ## Differential TE (`isr_translation/dte.py`)
 Per context: `log2CPM ~ stress + assay + stress:assay`, assays normalised separately. Reported separately with SE
@@ -37,13 +53,15 @@ Output: `results/<run>/isr_translation_signatures.parquet`.
   the training range.
 - **M3** rank-2 SVD of the residual gene × context matrix; context scores ridge-regressed on `z_c`. Stability by
   delete-2-contexts jackknife. The `+epigenome` ablation adds `epi_*` gene features to M2.
+- **Support rule.** M2/M3 genotype predictions run only with at least `min_contexts_for_state_model` engaged
+  contexts (6 in the public config). The public run has 3, so they are not produced.
 - **M4** not implemented (precondition unmet; `docs/decisions.md`).
 
 Intensity: `estimated` = mean `dTE` of the reference uORF-target set minus context median, scaled to mean 1;
 `metadata` = stated dose. Both are run for genotype predictions.
 
 ## Validation (`validation/evaluate.py`)
-Splits: held-out stressor (dose variants grouped), held-out cell type, held-out study; assertions forbid shared
+Splits (need ≥2 training studies): held-out stressor (dose variants grouped), held-out cell type, held-out study; assertions forbid shared
 study / cell type / stressor between train and test. Test-context dose is treated as unknown (training mean).
 Baselines: zero/uniform shift, nearest context in state space, reference gene set, permuted labels. Metrics:
 Pearson, Spearman, MAE, RMSE, sign concordance among significant observed genes, top-50 precision, program-level

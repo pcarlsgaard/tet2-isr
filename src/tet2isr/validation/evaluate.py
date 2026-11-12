@@ -43,7 +43,7 @@ def metrics(obs: np.ndarray, pred: np.ndarray, obs_fdr=None, sd=None, top_k: int
     return out
 
 
-def make_splits(ctx: pd.DataFrame) -> list[dict]:
+def make_splits(ctx: pd.DataFrame, min_train_studies: int = 2) -> list[dict]:
     """Leakage rules: a held-out study removes ALL its contexts; a held-out stressor removes that
     stressor everywhere (dose variants share a stressor family); a held-out cell type removes
     every context of that cell type."""
@@ -54,7 +54,7 @@ def make_splits(ctx: pd.DataFrame) -> list[dict]:
         for v in sorted(key.unique()):
             test = ctx.index[key == v]
             train = ctx.index[key != v]
-            if ctx.loc[train, "study_id"].nunique() >= 3:
+            if ctx.loc[train, "study_id"].nunique() >= min_train_studies:
                 out.append(dict(split=kind, held_out=v, train=list(train), test=list(test)))
     return out
 
@@ -155,6 +155,8 @@ def factor_stability(sig, genes, ctx, state_cols, rank=2, n_boot=30, seed=0) -> 
     """|cosine| between low-rank gene loadings from the full fit and context-bootstrap refits."""
     rng = np.random.default_rng(seed)
     ref = make_model("M3_low_rank", genes, state_cols).fit(sig, genes, ctx).fitted
+    if "L" not in ref or len(ctx) < rank + 4:
+        return pd.DataFrame([dict(factor="not fitted", note=f"{len(ctx)} contexts: too few for a rank-{rank} residual model")])
     L0 = ref["L"] / np.linalg.norm(ref["L"].values, axis=0)
     rows = []
     for b in range(n_boot):
@@ -214,4 +216,23 @@ def holdout_program_level(obs: pd.DataFrame, m2_gene: pd.DataFrame, programs: pd
                              predicted_I_TE_M2=float(pr.I_TE.mean()),
                              predicted_lo=float(pr.I_TE_lo.mean()), predicted_hi=float(pr.I_TE_hi.mean()),
                              predicted_I_TE_M1=0.0))
+    return pd.DataFrame(rows)
+
+
+def unengaged_check(sig_all, sig, genes, ctx, state_cols, programs) -> pd.DataFrame:
+    """Negative control: how well does the signature learned from ISR-engaged contexts 'predict' dTE
+    in stress contexts that failed the engagement gate?  High agreement would mean the signature is
+    generic stress/batch structure rather than ISR-specific."""
+    rest = sig_all[~sig_all.context_id.isin(ctx.index)]
+    if rest.empty:
+        return pd.DataFrame()
+    m = make_model("M1b_signature+dose", genes, state_cols).fit(sig, genes, ctx)
+    u = m.fitted["u"]
+    prog = {p: set(d.gene_id) for p, d in programs.groupby("program")}
+    rows = []
+    for cid, d in rest.groupby("context_id"):
+        o = d.set_index("gene_id").dTE_log2fc
+        g = o.index.intersection(u.index)
+        rows.append(dict(context_id=cid, **metrics(o[g].values, u[g].values, d.set_index("gene_id").dTE_fdr[g].values,
+                                                   programs=prog, index=g.values)))
     return pd.DataFrame(rows)

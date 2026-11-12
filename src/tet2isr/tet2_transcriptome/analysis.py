@@ -44,10 +44,12 @@ def genotype_de(counts: pd.DataFrame, genotype: pd.Series, min_mean: float = 5.0
     return res
 
 
-def run_all(studies: dict, target_compartment: str = "HSC") -> dict:
+def run_all(studies: dict, target_compartment="HSC") -> dict:
     """Per-study, per-compartment contrasts + random-effects meta-analysis in the target compartment."""
     per, qc, comp, expr = [], [], [], {}
+    tmap = target_compartment if isinstance(target_compartment, dict) else {}
     for sid, s in studies.items():
+        target = tmap.get(sid, target_compartment if isinstance(target_compartment, str) else None)
         counts, smp = s["counts"], s["samples"]
         info = {}
         if s["orthologs"] is not None:
@@ -62,6 +64,8 @@ def run_all(studies: dict, target_compartment: str = "HSC") -> dict:
             units = [(c, counts[m.sample_id], m.genotype.reset_index(drop=True), None)
                      for c, m in smp.groupby("compartment")]
         for compartment, cnt, geno, ncell in units:
+            if min((geno == "WT").sum(), (geno == "TET2").sum()) < 2:
+                continue
             de = genotype_de(cnt, geno).assign(study_id=sid, compartment=compartment)
             per.append(de)
             lc = log_cpm(cnt.values)
@@ -72,16 +76,32 @@ def run_all(studies: dict, target_compartment: str = "HSC") -> dict:
                            min_replicate_r=float(cor.min()), genes_tested=len(de),
                            median_cells_per_pseudobulk=(float(np.median(ncell)) if ncell is not None else np.nan),
                            **info))
-            if compartment == target_compartment:
+            if compartment == target:
+                de_target = de
                 expr[sid] = dict(counts=cnt, genotype=geno)
     per = pd.concat(per, ignore_index=True)
-    tgt = per[per.compartment == target_compartment]
+    per["is_target"] = [tmap.get(a, target_compartment if isinstance(target_compartment, str) else None) == b
+                        for a, b in zip(per.study_id, per.compartment)]
+    tgt = per[per.is_target]
     est = tgt.pivot(index="gene_id", columns="study_id", values="log2fc")
     se = tgt.pivot(index="gene_id", columns="study_id", values="se")
     meta = random_effects_meta(est.values, se.values)
     meta.insert(0, "gene_id", est.index.values)
     meta = meta.rename(columns={"estimate": "log2fc"})
     meta["n_studies_same_sign"] = (np.sign(est.values) == np.sign(meta.log2fc.values)[:, None]).sum(axis=1)
+    w = 1.0 / se.values ** 2
+    meta["max_weight_share"] = np.nanmax(w, axis=1) / np.nansum(w, axis=1)
+    idx = np.nanargmax(np.nan_to_num(w, nan=-1), axis=1)
+    meta["dominant_study"] = se.columns[idx]
+    # leave-the-dominant-study-out: does the result survive without its heaviest contributor?
+    est2, se2 = est.values.copy(), se.values.copy()
+    est2[np.arange(len(est2)), idx] = np.nan
+    se2[np.arange(len(se2)), idx] = np.nan
+    lo = random_effects_meta(est2, se2)
+    meta["log2fc_without_dominant"], meta["p_without_dominant"] = lo.estimate.values, lo.pvalue.values
+    meta["replicated"] = ((meta.fdr < 0.05) & (meta.k >= 3) & (meta.n_studies_same_sign >= 3)
+                          & (np.sign(meta.log2fc_without_dominant) == np.sign(meta.log2fc))
+                          & (meta.p_without_dominant < 0.05))
     meta["tau_note"] = np.where(meta.k < 3, "tau poorly identified (k<3 studies)", "")
-    return dict(per_study=per, meta=meta, qc=pd.DataFrame(qc), expr=expr,
+    return dict(concordance=est.corr(method="spearman"), per_study=per, meta=meta, qc=pd.DataFrame(qc), expr=expr,
                 composition=(pd.concat(comp) if comp else pd.DataFrame()))

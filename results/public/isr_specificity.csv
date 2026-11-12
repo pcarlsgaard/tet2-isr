@@ -1,0 +1,4 @@
+stress_context,stress_role,blocked_context,n_genes,pearson_dTE_stress_vs_blocked,n_sig_dTE_stress,n_sig_dTE_blocked,frac_sig_stress_genes_with_smaller_abs_dTE_when_blocked,ref_set_mean_dTE_stress,ref_set_mean_dTE_blocked,n_ref_genes
+GSE65778|HEK293T|tunicamycin_1h,train,GSE65778|HEK293T|tunicamycin_1h_with_ISRIB,10723,0.24283308777893917,264,0,0.9962121212121212,2.0215629259256778,0.36823431194599554,8
+GSE193945|mouse_SCC|bortezomib_4.5h,train,GSE193945|mouse_SCC|bortezomib_4.5h_eIF2a_S51A,8280,0.3071952328212648,3,491,0.3333333333333333,-0.020559663948989906,-0.8535371084939782,8
+GSE119365|mouse_erythroblast|iron_deficiency,excluded_low_depth,GSE119365|mouse_erythroblast|iron_deficiency_Hri_KO,5035,0.136502699615085,0,2,,-0.8202141654404337,-1.463545682144362,6

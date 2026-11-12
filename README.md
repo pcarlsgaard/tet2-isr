@@ -3,67 +3,61 @@
 Research software and hypothesis-generation project. It asks whether transcripts and programs respond differently
 to integrated stress response (ISR) activation in TET2-deficient versus WT HSPCs, and separates two mechanisms:
 
-1. **substrate/compositional** — TET2 loss changes which mRNAs are present; a *common* ISR translation response then
-   yields different output (M1);
-2. **true genotype × ISR translation interaction** `I_TE` — the stress-induced TE change itself differs (M2/M3, or a
-   direct 2×2 translatome).
+1. **substrate/compositional**: TET2 loss changes which mRNAs are present; a *common* ISR translation response then
+   yields different output (model M1);
+2. **true genotype × ISR translation interaction** `I_TE`: the stress-induced TE change itself differs (needs M2/M3
+   or a direct 2×2 translatome).
 
-## Current status — read this first
+## Status
 
 | | Status |
 |---|---|
-| Pipeline (ingest contract → TET2 contrasts → differential TE → M0–M3 → held-out validation → report) | **Implemented, tested, runs end to end** on a synthetic ground-truth dataset (`make smoke-test`, ~1 min, no downloads) |
-| Public-data audit | **Partial.** The build session could not reach NCBI/GEO, Zenodo, Ensembl or journal sites. Sample-level metadata are *unverified*; see `docs/data_audit.md` |
-| M0/M1 on real public data | **Not run** (no data could be downloaded). `make download-processed` and `CONFIG=configs/public.yml` stages are wired but contingent on network access and per-study adapters |
-| Real-gene predictions | Prior-knowledge hypothesis table only (`results/prediction_priority_table.csv`), with **no fitted magnitudes** |
-| Direct WT/TET2 × ISR translatome | None known in public data. `I_TE` is unidentified from public sources |
+| Public-data audit | Done for 24 GEO series (sample records saved in `results/audit/`); see `docs/data_audit.md` |
+| Real-data run (`make public`, about 1 min after download) | Done: 4 TET2 studies, 9 paired RNA/Ribo ISR studies ingested; report in `reports/research_report.html` |
+| M0 (basal TET2 contrasts), M1 (substrate-only overlay) | Run on real data |
+| M2/M3 (state-dependent / low-rank) | Implemented and tested on synthetic data; **not supported by the public data** (3 ISR-engaged contexts) and not used for genotype prediction |
+| Direct WT/TET2 × ISR translatome | **Does not exist in GEO** (0 series). `I_TE` is not estimated |
+| Synthetic ground-truth demo (`make smoke-test`) | Kept as a method check: `reports/research_report_synthetic_demo.html`, gene IDs `SYN…` |
 
-Everything under `results/smoke/` and in `reports/research_report.html` is **simulated** (gene IDs `SYN…`). It
-demonstrates the method and its limits; it is not evidence about TET2.
+## What the public data show
+
+- **No reproducible basal TET2 signature across studies.** Gene-level log2(TET2/WT) correlations between the four
+  studies are −0.06 to 0.09. 902 genes reach meta-analysis FDR < 0.05, but 644 of those are carried >80% by one
+  n = 2 vs 2 study; 78 survive a replication rule. No program differs consistently.
+- **The canonical ISR translation response is real and specific where the ISR is engaged.** Reference uORF targets
+  (ATF4, ATF5, DDIT3, IFRD1, SLC35A4 …) gain 1–3.5 log2 in TE under tunicamycin 1 h, arsenite 2 h and tunicamycin
+  16 h; ISRIB removes it (set mean 2.0 → 0.4).
+- **Five of eight replicated stress contexts fail that positive control** (thapsigargin 3 h borderline; bortezomib,
+  WEE1 inhibitor and LN308 tunicamycin flat).
+- **Genome-wide dTE does not transfer between studies.** Held-out-study Pearson is 0.01–0.03 for a pooled gene
+  signature, −0.08 for sequence features, 0.18 for the nearest single context. What transfers is a small core and
+  program-level structure (program recovery r ≈ 0.7–0.9).
+- **Substrate-only genotype differences are negligible.** Program-level M1 interactions are all |log2| < 0.1 and
+  change sign between TET2 studies; 1 of 72 intervals excludes zero.
+- **Nothing in public data speaks to a genotype-specific translation effect.** That needs the experiment in
+  `docs/experimental_validation_plan.md`.
 
 ## Quick start
 
 ```bash
-make setup            # venv + locked dependencies (requirements.lock)
-make smoke-test       # tests + synthetic data -> M0..M3 -> validation -> reports/research_report.html
-make audit-data       # validates the manifest; fetches GEO records if NCBI is reachable
-make download-processed            # contingent: needs www.ncbi.nlm.nih.gov + ftp.ncbi.nlm.nih.gov
-make analyze-isr analyze-tet2 fit-baselines evaluate report CONFIG=configs/public.yml   # contingent on data
+make setup            # venv + locked dependencies
+make smoke-test       # tests + synthetic end-to-end demo (no downloads)
+make audit-data       # validate manifest, save GEO sample records
+make public           # download processed files (1.4 GB incl. reference), build, analyse, report
 ```
-
-Individual stages (`analyze-isr`, `fit-baselines`, `evaluate`, `report`) default to `configs/smoke.yml`.
-
-## What the synthetic run already shows (method findings, not biology)
-
-- **2×2 example** (`results/smoke/example_2x2_summary.csv`): shared `dTE` + different basal mRNA gives a linear-scale
-  interaction of 10 units with `I_TE = 0` and gene-level log `I_S = 0`. A two-gene *pathway* nevertheless shows a
-  log-scale interaction of 0.32, purely from abundance weighting.
-- **Held-out prediction**: a pooled gene signature (M1) predicts `dTE` in unseen studies with mean Pearson 0.72;
-  sequence-only 0.62; nearest-context 0.58; permuted-label null 0.01. Adding cell-state interactions (M2), stress
-  class or an epigenome feature does not improve held-out `dTE` (0.72), and the low-rank M3 is worse (0.66).
-- **Held-out `dTE` accuracy cannot detect a genotype interaction.** The simulation contains a real `I_TE` (+0.47 log2
-  at uORF targets, measured in a hidden 2×2 translatome). M1 predicts 0 by assumption. M2 predicts 0.00 when ISR
-  dose is estimated from marker genes and 0.27 (95% interval −0.15 to 0.46) only when the true dose is supplied.
-  **ISR dose and state-dependent responsiveness are confounded unless dose is anchored independently
-  (p-eIF2α).**
-- **Power**: with 3 biological replicates per arm, no single gene reached FDR < 0.05 for `I_TE` in the hidden 2×2
-  experiment; the uORF-target *set* was clearly detected. Gene-set-level `I_TE` is the realistic readout.
+Stages can be run singly with `CONFIG=configs/public.yml` (`analyze-isr`, `analyze-tet2`, `fit-baselines`,
+`evaluate`, `report`).
 
 ## Layout
 
 ```
-configs/      smoke.yml, public.yml, prior_hypotheses.tsv
-data/         dataset_manifest.tsv; raw/ and processed/ are gitignored
-docs/         data_audit, identifiability memo (in assumptions_and_limits), methods, model_card, decisions,
+configs/      smoke.yml, public.yml, public_sources.tsv (files to download), prior_hypotheses.tsv
+data/         dataset_manifest.tsv; raw/ and processed/ are gitignored (re-created by make public)
+docs/         data_audit, assumptions_and_limits (identifiability memo), methods, model_card, decisions,
               experimental_validation_plan
-src/tet2isr/  contracts, effects, stats, data_ingest/, tet2_transcriptome/, isr_translation/, modeling/,
-              validation/, reporting/, pipeline, cli
-tests/        19 tests: effect arithmetic, count alignment, ortholog joins, pseudobulk, leakage, model shapes
-results/      smoke/ (synthetic run + provenance.json), prediction_priority_table.csv (prior-only)
-reports/      research_report.html, executive_summary.md
-slurm/        optional batch profile
+src/tet2isr/  contracts, effects, stats, data_ingest/ (synthetic, geo, public adapters), tet2_transcriptome/,
+              isr_translation/, modeling/, validation/, reporting/, pipeline, cli
+tests/        22 tests
+results/      public/ (real run), smoke/ (synthetic), audit/ (GEO records), prediction_priority_table.csv
+reports/      research_report.html (real data), research_report_synthetic_demo.html, executive_summary.md
 ```
-
-## Documents
-`docs/data_audit.md` · `docs/assumptions_and_limits.md` · `docs/methods.md` · `docs/model_card.md` ·
-`docs/decisions.md` · `docs/experimental_validation_plan.md` · `reports/executive_summary.md` · `AGENTS.md`

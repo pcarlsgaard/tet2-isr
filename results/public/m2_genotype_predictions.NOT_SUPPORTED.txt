@@ -1,0 +1,1 @@
+M2/M3 genotype prediction NOT RUN: 3 ISR-engaged contexts from 3 studies; the state-dependent model has 3 state covariates and needs >= 6 contexts (config: min_contexts_for_state_model). Model-based I_TE is not identifiable from these data.

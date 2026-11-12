@@ -47,6 +47,22 @@ def estimate_intensity(sig: pd.DataFrame, ref_genes) -> pd.Series:
     return (r / r.mean()).clip(lower=0.05).rename("intensity")
 
 
+def isr_engagement(sig: pd.DataFrame, ref_genes, min_dte: float = 0.5, alpha: float = 0.05) -> pd.DataFrame:
+    """Positive-control gate. A context counts as ISR-engaged only if the reference uORF-target set
+    has mean dTE (relative to the context median) >= min_dte with one-sided t-test p < alpha across
+    the reference genes. Unengaged contexts are reported but do not define the ISR signature."""
+    from scipy import stats as sps
+    med = sig.groupby("context_id").dTE_log2fc.median()
+    rows = []
+    for cid, d in sig[sig.gene_id.isin(ref_genes)].groupby("context_id"):
+        x = d.dTE_log2fc.values - med[cid]
+        p = sps.ttest_1samp(x, 0, alternative="greater").pvalue if len(x) > 2 else np.nan
+        rows.append(dict(context_id=cid, n_ref_genes=len(x), ref_mean_dTE=float(x.mean()),
+                         ref_frac_positive=float((x > 0).mean()), ref_p_one_sided=float(p),
+                         engaged=bool(x.mean() >= min_dte and p < alpha)))
+    return pd.DataFrame(rows).set_index("context_id")
+
+
 # ------------------------------------------------------------------ M0
 def m0_programs(expr: dict, programs: pd.DataFrame) -> pd.DataFrame:
     """Replicate-aware program-level genotype contrasts (Welch t on per-sample scores)."""
@@ -275,7 +291,7 @@ def bootstrap_fit(name, sig, genes, ctx, state_cols, n_boot=30, seed=0):
     fits = []
     for _ in range(n_boot):
         pick = rng.choice(studies, len(studies), replace=True)
-        if len(set(pick)) < 3:
+        if len(set(pick)) < min(3, len(studies)):
             continue
         parts, cparts = [], []
         for i, s in enumerate(pick):  # duplicated studies get distinct context ids

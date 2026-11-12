@@ -1,11 +1,22 @@
-# Real-data run. Contingent on `make download-processed` succeeding (see docs/data_audit.md).
+# Real public-data run: `make public` (download -> build-public -> all stages -> report).
 run_name: public
 data_root: data/processed/public
-target_compartment: HSC
-state_programs: [eif2_ternary_complex, ribosome_biogenesis, proliferation, heme_iron]
+# Best available HSC-enriched population per TET2 study (they are NOT the same population).
+target_compartment:
+  GSE232384: LT-HSC        # mouse, sorted LT-HSC, 4 KO vs 3 WT animals
+  GSE212534: HSC           # mouse, sorted donor HSC 13 months post-transplant, 2 vs 2 libraries
+  GSE183675: LSK_young     # mouse, LSK (HSPC, not HSC), 2 vs 2; normalised values only
+  GSE287524: CD34_HSPC     # human CD34+ from long-term culture, CRISPR TET2-mutant, 3 vs 3
+state_programs: [eif2_ternary_complex, ribosomal_proteins, HALLMARK_E2F_TARGETS]
 reference_program: isr_uorf_targets
-intensity_source: estimated
-isr_intensities: {low: 0.5, moderate: 1.0, high: 1.5}
-n_boot: 200
-n_mc: 1000
+intensity_source: estimated          # 'metadata' is uniform (=1): doses are not commensurable across stressors
+isr_intensities: {low: 0.5, moderate: 1.0, high: 1.5}   # multiples of the mean training-context intensity
+n_boot: 100
+n_mc: 300
 seed: 0
+# Positive-control gate: a context defines the ISR signature only if the reference uORF-target set
+# has mean dTE >= this (log2, relative to context median) with one-sided p < alpha.
+engagement_min_dte: 0.5
+engagement_alpha: 0.05
+# The state-dependent model (M2) is fitted for genotype prediction only with at least this many engaged contexts.
+min_contexts_for_state_model: 6

@@ -1,5 +1,10 @@
 # Experimental validation proposal (design only; nothing here has been run)
 
+What the public-data run changes: (i) confirm ISR engagement in every sample with a positive control (ATF4 protein
+or reference-set TE), because most published "stress" conditions did not engage it; (ii) pre-specify the endpoint
+on the core set that transferred across studies (ATF4, ATF5, DDIT3, IFRD1, SLC35A4, PTP4A1, PPP1R15B), not on
+genome-wide signatures; (iii) include an ISRIB arm, which was the cleanest specificity control available.
+
 ## Single most informative falsification experiment
 **2 × 2 paired RNA-seq + Ribo-seq (or polysome-seq) in HSC-enriched cells: WT vs Tet2-KO × vehicle vs ISR
 inducer, at an early time point, with ISR input matched by p-eIF2α.**

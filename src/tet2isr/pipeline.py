@@ -42,9 +42,10 @@ def stage_tet2(cfg):
     out = cfg["out"]
     r = tet2.run_all(contracts.load_tet2_studies(cfg["data_root"]), cfg["target_compartment"])
     r["per_study"].assign(evidence="observed").to_parquet(out / "tet2_gene_contrasts_per_study.parquet", index=False)
-    r["meta"].assign(evidence="observed", compartment=cfg["target_compartment"]).to_parquet(
+    r["meta"].assign(evidence="observed", compartment=str(cfg["target_compartment"])).to_parquet(
         out / "tet2_gene_contrasts_meta.parquet", index=False)
     r["qc"].to_csv(out / "tet2_sample_qc.tsv", sep="\t", index=False)
+    r["concordance"].to_csv(out / "tet2_cross_study_spearman.csv")
     r["composition"].to_csv(out / "tet2_composition.tsv", sep="\t", index=False)
     return r
 
@@ -60,11 +61,59 @@ def _isr_inputs(cfg):
 def stage_isr(cfg):
     out = cfg["out"]
     ctx, smp, cnt, genes, programs = _isr_inputs(cfg)
-    sig = dte.build_signatures(ctx, smp, cnt)
+    sig = dte.build_signatures(ctx[contracts.CONTEXT_COLS], smp, cnt)
     sig.to_parquet(out / "isr_translation_signatures.parquet", index=False)
     dte.library_qc(cnt, smp).to_csv(out / "isr_library_qc.tsv", sep="\t", index=False)
     dte.pooled_signature(sig).to_parquet(out / "isr_pooled_dte.parquet", index=False)
+    _specificity(cfg, sig, genes, programs)
     return sig
+
+
+def _specificity(cfg, sig, genes, programs):
+    """Reference-gene check for every context, and comparison of each stress signature with its
+    ISR-blocked counterpart (ISRIB, eIF2a-S51A, Hri-KO). Descriptive; never used for fitting."""
+    out, root = cfg["out"], Path(cfg["data_root"])
+    if not (root / "isr/contexts_all.tsv").exists():
+        return
+    ctx = pd.read_csv(root / "isr/contexts_all.tsv", sep="\t")
+    smp = pd.read_csv(root / "isr/samples_all.tsv", sep="\t")
+    cnt = pd.read_parquet(root / "isr/counts_all.parquet")
+    extra = ctx[~ctx.context_id.isin(sig.context_id)]
+    allsig = pd.concat([sig.assign(role="train"), dte.build_signatures(
+        extra, smp[smp.context_id.isin(extra.context_id)], cnt).merge(extra[["context_id"]], on="context_id")],
+        ignore_index=True)
+    allsig["role"] = allsig.context_id.map(ctx.set_index("context_id").role)
+    allsig.to_parquet(out / "isr_translation_signatures_all.parquet", index=False)
+    sym = genes.set_index("gene_id").symbol if "symbol" in genes else None
+    ref = programs.loc[programs.program == cfg["reference_program"], "gene_id"]
+    r = allsig[allsig.gene_id.isin(ref)].copy()
+    if sym is not None:
+        r.insert(0, "symbol", r.gene_id.map(sym))
+    med = allsig.groupby("context_id").dTE_log2fc.median()
+    r["dTE_minus_context_median"] = r.dTE_log2fc - r.context_id.map(med)
+    r[["symbol", "context_id", "role", "dRNA_log2fc", "dRibo_log2fc", "dTE_log2fc", "dTE_minus_context_median",
+       "dTE_se", "dTE_fdr"]].to_csv(out / "reference_set_check.csv", index=False)
+    rows = []
+    pairs = ctx[ctx.role == "specificity_control"]
+    for _, b in pairs.iterrows():
+        cand = ctx[(ctx.study_id == b.study_id) & (ctx.role != "specificity_control")]
+        if cand.empty:
+            continue
+        a = cand.iloc[0]
+        x = allsig[allsig.context_id == a.context_id].set_index("gene_id")
+        y = allsig[allsig.context_id == b.context_id].set_index("gene_id")
+        g = x.index.intersection(y.index)
+        xr, yr = x.loc[g.intersection(ref)], y.loc[g.intersection(ref)]
+        sx = x.loc[g][x.loc[g].dTE_fdr < 0.05]
+        rows.append(dict(stress_context=a.context_id, stress_role=a.role, blocked_context=b.context_id,
+                         n_genes=len(g), pearson_dTE_stress_vs_blocked=float(np.corrcoef(x.loc[g].dTE_log2fc, y.loc[g].dTE_log2fc)[0, 1]),
+                         n_sig_dTE_stress=int((x.loc[g].dTE_fdr < 0.05).sum()), n_sig_dTE_blocked=int((y.loc[g].dTE_fdr < 0.05).sum()),
+                         frac_sig_stress_genes_with_smaller_abs_dTE_when_blocked=(
+                             float((np.abs(y.loc[sx.index].dTE_log2fc) < np.abs(sx.dTE_log2fc)).mean()) if len(sx) else np.nan),
+                         ref_set_mean_dTE_stress=float(xr.dTE_log2fc.mean() - x.dTE_log2fc.median()),
+                         ref_set_mean_dTE_blocked=float(yr.dTE_log2fc.mean() - y.dTE_log2fc.median()),
+                         n_ref_genes=len(xr)))
+    pd.DataFrame(rows).to_csv(out / "isr_specificity.csv", index=False)
 
 
 def _context_table(cfg, sig, source=None):
@@ -73,6 +122,12 @@ def _context_table(cfg, sig, source=None):
     c = ctx.set_index("context_id").join(models.context_states(cnt, smp, programs, st))
     c["intensity_metadata"] = c["intensity"]
     ref = programs.loc[programs.program == cfg["reference_program"], "gene_id"]
+    eng = models.isr_engagement(sig, ref, cfg.get("engagement_min_dte", -np.inf), cfg.get("engagement_alpha", 1.01))
+    c = c.join(eng)
+    c.reset_index().to_csv(cfg["out"] / "isr_engagement.tsv", sep="\t", index=False)
+    if "engagement_min_dte" in cfg:
+        c = c[c.engaged]
+        sig = sig[sig.context_id.isin(c.index)]
     c["intensity_estimated"] = models.estimate_intensity(sig, ref)
     c["intensity"] = c[f"intensity_{source or cfg['intensity_source']}"]
     c["intensity"] = c["intensity"] / c["intensity"].mean()
@@ -111,8 +166,11 @@ def stage_evaluate(cfg):
     sig = pd.read_parquet(out / "isr_translation_signatures.parquet")
     r = tet2.run_all(contracts.load_tet2_studies(cfg["data_root"]), cfg["target_compartment"])
     st = cfg["state_programs"]
+    sig_all = sig
     c, genes, programs, ref = _context_table(cfg, sig)
+    sig = sig[sig.context_id.isin(c.index)]
     c.reset_index().to_csv(out / "isr_context_table.tsv", sep="\t", index=False)
+    evaluate.unengaged_check(sig_all, sig, genes, c, st, programs).to_csv(out / "unengaged_context_check.csv", index=False)
     ev = evaluate.run_heldout(sig, genes, c, st, programs, ref, cfg["seed"])
     ev.to_csv(out / "heldout_metrics.csv", index=False)
     evaluate.gene_family_leakage(sig, genes, c, seed=cfg["seed"]).to_csv(out / "gene_family_leakage.csv", index=False)
@@ -126,8 +184,18 @@ def stage_evaluate(cfg):
         obs = dte.genotype_by_isr_dte(hc, hs)
         obs.to_parquet(out / "holdout_observed_genotype_x_isr.parquet", index=False)
     m1 = pd.read_parquet(out / "m1_gene_predictions.parquet")
+    need = cfg.get("min_contexts_for_state_model", 0)
+    if len(c) < need:
+        msg = (f"M2/M3 genotype prediction NOT RUN: {len(c)} ISR-engaged contexts from {c.study_id.nunique()} studies; "
+               f"the state-dependent model has {len(st)} state covariates and needs >= {need} contexts "
+               "(config: min_contexts_for_state_model). Model-based I_TE is not identifiable from these data.\n")
+        (out / "m2_genotype_predictions.NOT_SUPPORTED.txt").write_text(msg)
+        (out / "holdout_validation.NOT_AVAILABLE.txt").write_text(
+            "No direct genotype x ISR translatome exists in public data (GEO search 2026-11-12: 0 series).\n")
+        print("[tet2isr] " + msg.strip())
+        return
     for src in ("estimated", "metadata"):
-        cs, _, _, _ = _context_table(cfg, sig, src)
+        cs, _, _, _ = _context_table(cfg, sig_all, src)
         if cs.intensity.isna().any():
             continue
         p, states, _ = models.m2_genotype_prediction(sig, genes, cs, st, r["expr"], programs,

@@ -4,9 +4,9 @@
 
 | Quantity | Needed data | Available publicly? | Status |
 |---|---|---|---|
-| Basal genotype contrast in RNA, `log2 M[TET2]/M[WT]` | WT vs TET2 RNA, matched compartment, biological replicates | Yes (several GEO series, unverified) | **Estimable** (M0) |
+| Basal genotype contrast in RNA, `log2 M[TET2]/M[WT]` | WT vs TET2 RNA, matched compartment, biological replicates | Yes: 4 usable studies | **Estimable** (M0), but studies disagree |
 | ISR RNA response | stress vs control RNA | Yes | Estimable, per context |
-| ISR `dTE` in some cell type | paired RNA + Ribo, stress vs control, replicates | Probably (GSE65778, GSE227766) | Estimable **in those cells**, not in HSCs |
+| ISR `dTE` in some cell type | paired RNA + Ribo, stress vs control, replicates | Yes: 9 studies ingested, 3 contexts ISR-engaged | Estimable **in those cells**, not in HSCs |
 | ISR `dTE` in WT HSCs | Ribo-seq in HSCs under ISR | Not found | Transfer assumption |
 | `I_TE = dTE[TET2] − dTE[WT]` | paired RNA + Ribo in all four genotype × ISR cells | Not found | **Unidentified.** Only an assumption (M1: 0) or a model-based extrapolation (M2) |
 | Linear-scale output difference | `M` per genotype + a `dTE` | via transfer | Computable under M1 assumptions; arbitrary units |
@@ -59,14 +59,31 @@ targets); supplying the true dose recovered it partially (0.27, interval spannin
 | A7 | Ribosome occupancy change reflects initiation change | all TE | elongation stalling, uORF footprints misread as TE |
 | A8 | One-to-one orthologs behave alike in mouse and human | cross-species | ambiguous pairs are dropped, not resolved |
 
-## 5. Limits of the current implementation
+## 5. What the public data added to the identifiability picture
+
+- **A1 is weaker than assumed.** Between ISR-engaged contexts, genome-wide dTE agrees only weakly (Spearman
+  0.14–0.25, negative between tunicamycin 16 h and arsenite). A pooled signature predicts a held-out study at
+  r ≈ 0.02. Transfer is defensible for a core set (uORF targets up; ribosomal-protein mRNAs down under ER stress)
+  and for program-level means, not gene by gene.
+- **"Stress" is not "ISR".** Five of eight replicated stress contexts did not move the reference targets. Any
+  signature built without a positive-control gate mixes ISR with unrelated effects.
+- **The gate is partly circular.** Reference genes select contexts and are then predicted. Independent support:
+  ISRIB abolishes their induction in the one study that tested it.
+- **There is no consensus basal TET2 state** to feed a state-dependent model: state-program differences are
+  within noise and change sign between studies.
+- **M2 is not fit-able**: 3 contexts, 3 state covariates, and state scores that are confounded with library
+  chemistry (poly-A, total RNA, 3′-tag).
+
+## 6. Limits of the current implementation
 - Differential TE uses log-CPM linear models with variance moderation, not a negative-binomial GLM. Confirm with
   DESeq2 `deltaTE` or anota2seq on real counts.
 - Gene level only. Isoform/5′UTR-resolved quantification is supported by the contract (any stable ID) but no
   transcript-level quantifier is wired in.
 - Read-level Ribo-seq QC (footprint length, periodicity, P-site offsets, CDS fraction, rRNA) is not implemented;
   the QC table says "not available" explicitly.
-- RiboNN is not run (weights unreachable; GPU recommended). Sequence features in the smoke test are simulated.
+- RiboNN is not run (GPU recommended). Real sequence features are simple canonical-transcript summaries from Ensembl 113 (5′UTR length, GC, uAUG/uORF counts, TOP-like start, CDS and 3′UTR length); they predicted dTE in unseen genes at r = 0.24 within a context set and not at all across studies. Annotated TSSs are too imprecise for a real TOP call.
+- Gene families are a symbol-root heuristic, not a paralogy database.
+- Reference and ATF4-target gene lists were written from memory of the cited papers, then checked against the data (`reference_set_check.csv`), not copied from supplementary tables.
 - M2 intervals are under-covering on held-out contexts in the synthetic run (95% nominal → ~89–90%); M3 worse
   (~81–83%). Treat intervals as optimistic.
 - With k < 3 TET2 studies the between-study variance is essentially unestimated (flagged in the meta table).

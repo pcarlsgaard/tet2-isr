@@ -68,3 +68,20 @@ def test_family_grouped_split_separates_paralogs(world):
     r = evaluate.gene_family_leakage(world["sig"], world["genes"], world["ctx"]).set_index("scheme")
     assert r.loc["family_grouped_split", "families_split_across_folds"] == 0
     assert r.loc["random_gene_split", "families_split_across_folds"] > 0
+
+
+def test_engagement_gate_separates_engaged_from_flat_context(world):
+    ref = world["programs"].loc[world["programs"].program == "isr_uorf_targets", "gene_id"]
+    sig = world["sig"]
+    flat = sig[sig.context_id == sig.context_id.iloc[0]].assign(context_id="FLAT", dTE_log2fc=0.01)
+    e = models.isr_engagement(pd.concat([sig, flat]), ref, min_dte=0.3, alpha=0.05)
+    assert not e.loc["FLAT", "engaged"]
+    assert e.drop(index="FLAT").engaged.all()
+
+
+def test_meta_flags_single_study_dominance(world):
+    r = tet2.run_all(contracts.load_tet2_studies(world["root"]))
+    m = r["meta"]
+    assert {"max_weight_share", "dominant_study", "replicated"} <= set(m.columns)
+    assert not m.replicated.any()            # two studies only: k < 3 can never count as replicated
+    assert r["concordance"].shape == (2, 2)

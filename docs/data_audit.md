@@ -1,59 +1,67 @@
-# Data audit and risk memo (Milestone 1 — incomplete)
+# Data audit and risk memo
 
-## Blocker
-The build container's network policy refused every primary data host: `www.ncbi.nlm.nih.gov`,
-`ftp.ncbi.nlm.nih.gov`, `eutils.ncbi.nlm.nih.gov`, `zenodo.org`, `ftp.ensembl.org`, `www.ebi.ac.uk`,
-`europepmc.org`, `www.nature.com`, `data.broadinstitute.org`. Reachable: PyPI, conda-forge,
-`raw.githubusercontent.com`, `github.com` pages, and a web-search tool returning third-party snippets.
+Audit date 2026-11-12. For each series the GEO series record and every sample record were read and saved
+(`results/audit/`, checksums in `results/audit/geo_reachability.tsv`); processed files were downloaded with SHA-256
+(`data/raw/download_log.json`). Full fields: `data/dataset_manifest.tsv`.
 
-**Impact on inference:** no GEO sample sheet, supplementary file, licence statement or count matrix was inspected.
-Fields in `data/dataset_manifest.tsv` marked `unverified` or `claimed_unverified` repeat the project brief and
-have not been independently confirmed. No real-data analysis was run. Nothing in this repository is a finding
-about TET2.
+## Does a direct WT/TET2 × ISR translation dataset exist?
+No. A GEO DataSets query for TET2 with ribosome profiling, Ribo-seq, polysome or translation efficiency returned
+0 series; TET2 with ISR/ATF4/eIF2/HRI/ISRIB returned only an unrelated valine-restriction study. Consequence:
+`I_TE` cannot be estimated from public data.
 
-**To clear it:** allow the hosts above, then `make audit-data` (saves each GEO record to `results/audit/` and
-counts samples) and `make download-processed`. Fill the unverified manifest fields by hand from the saved records.
+## Corrections to the starting list
 
-## What was confirmed, and how
-
-| Source | Confirmed | Route |
+| Series | Brief said | GEO record says |
 |---|---|---|
-| RiboNN (`Sanofi-Public/RiboNN`) | Repo exists; human + mouse multi-task models; weights at `zenodo.org/records/17258709`; training TE comes from the paper's supplementary tables; the repo's own training file contains **fake** TEs; separate model-weights licence file exists (terms not read); predicts basal TE from 5′UTR/CDS/3′UTR sequence | README and repo page read directly |
-| `CenikLab/TE_model` (Liu et al.) | Repo exists, GPL-3.0; ribo files are *not* in the repo (email request or regenerate); HeLa example on Zenodo 10594392; location of processed TE matrices not found | repo page read directly |
-| GSE227766 | Title "Senescence-specific translation dysregulation desensitizes cells to stress by inhibiting activation of the integrated stress response"; human; abstract reports high eIF2α-P with suppressed ATF4 translation in senescent cells; linked article PMC11231295 | search snippet (OmicsDI). Thapsigargin/quiescent arms, RNA+Ribo pairing and replicate counts **not** confirmed |
-| GSE268127 | Not confirmed. Sibling records GSE268130/GSE268132 belong to "Plasticity of the Mammalian Integrated Stress Response" (split ISR, PCK2) | search snippet |
-| GSE65778 (added lead) | Title "The small molecule ISRIB reverses the effects of eIF2 phosphorylation on translation and stress granule assembly" | search snippet; design recalled from the publication, unverified |
-| All TET2 series, GSE273599–601 | Nothing beyond the brief | — |
+| GSE268127 | possible ISR translation data | RNA-seq only (ATF4 uORF1-mutant mESC, 3 vs 3) |
+| GSE227766 | cycling/quiescent/senescent × thapsigargin | thapsigargin (25 nM, 3 h) only in cycling cells; Tg libraries deposited 18 months after controls, so batch is confounded with treatment. State dependence of the ISR is not estimable from it |
+| GSE132090 | check replication | no biological replication: one pool of two mice per genotype, two technical libraries. Excluded |
+| GSE285379 | primary human scRNA set | one library per genotype × treatment. Excluded (cells are not replicates) |
+| GSE287524 | secondary | usable: CD34+ HSPC, CRISPR TET2-mutant vs WT, 3 vs 3 untreated (and 3 vs 3 LPS) |
+| GSE183675 | RNA + epigenome | RNA deposited only as normalised values; LSK, 2 vs 2 per age |
+| GSE65778 | (added) | confirmed: HEK293T, tunicamycin 1 h ± ISRIB, paired Ribo/RNA, 2 per arm |
 
-## Does a direct WT/TET2 × ISR translation-efficiency dataset exist?
-None is known among the listed sources, and none was found by search. This is a negative from an incomplete
-search (GEO itself was not queryable), not a proof of absence. Consequence: **`I_TE` cannot be estimated from
-public data.** It can only be (a) assumed zero (M1), (b) predicted through learned state-dependence with transfer
-assumptions (M2), or (c) measured.
+## Sources used
 
-## Provisional priority (to be revised after verification)
+TET2 basal contrasts (one "target" population each; they are not the same population):
 
-ISR translation (need ≥1 adequate paired RNA/Ribo contrast):
-1. **GSE65778** — ISRIB arm separates eIF2α-P-dependent translation from stressor pleiotropy. Cell line.
-2. **GSE227766** — paired design per brief; gives state dependence (cycling/quiescent/senescent) within one cell
-   type, directly relevant to M2. Thapsigargin is pleiotropic; fibroblasts are far from HSPCs.
-3. **GSE268127** — only if Ribo-seq is actually present.
-Not usable for TE: GSE273599/600/601 (RNA only; use for late ATF4-dependent transcription).
+| Series | Species | Target population | n WT / TET2 | Main caveat |
+|---|---|---|---|---|
+| GSE232384 | mouse | sorted LT-HSC (200 cells) | 3 / 4 animals | low-input noise |
+| GSE212534 | mouse | sorted donor HSC, 13 months post-transplant | 2 / 2 libraries | transplant, clonal selection |
+| GSE183675 | mouse | LSK, young | 2 / 2 | HSPC not HSC; normalised input |
+| GSE287524 | human | CD34+ from long-term culture | 3 / 3 | cultured; edited pool |
 
-TET2 basal contrasts (need ≥2 independent studies):
-1. **GSE285379** (human scRNA; untreated arms only for the basal contrast; donor pseudobulk).
-2. **GSE212534** (mouse HSC/MPP3 sc; animal pseudobulk; transplant caveat).
-3. **GSE183675**, **GSE132090** (replication structure must be checked — pooled animals may leave no residual df,
-   in which case `genotype_de` refuses to run), **GSE232384**.
-GSE287524 and GSE307624 are the same study as GSE285379 and do not count as independent replication.
+Tet2/TET2 mRNA is not lower in the mutant samples of any study, so genotype cannot be confirmed from expression.
+
+ISR translation (paired RNA + Ribo, ≥2 replicates per arm, found by GEO search plus the brief):
+
+| Series | Cells | Stressor | Role in this run |
+|---|---|---|---|
+| GSE65778 | HEK293T | tunicamycin 1 h; + ISRIB | engaged; ISRIB arm = specificity control |
+| GSE254631 / GSE254349 | U-2OS (G3BP1 rescue) | arsenite 200 µM 2 h | engaged |
+| GSE282509 | HeLa | tunicamycin 16 h | engaged (late) |
+| GSE227766 | IMR90 | thapsigargin 3 h | gate not passed (mean 0.57, p = 0.20) |
+| GSE291029 | RPE-1 TP53-KO | WEE1 inhibitor 24 h | gate not passed |
+| GSE193945 | mouse SCC | bortezomib 4.5 h; eIF2α-S51A | gate not passed; S51A = control |
+| GSE129757 | LN308 | tunicamycin 2 h, 6 h | gate not passed (no reference response) |
+| GSE119365 | mouse erythroblasts | iron deficiency (HRI); Hri-KO | excluded by depth rule (one library 0.14 M reads) |
+| GSE256237 | HCT116 | arsenite 1 h | excluded by depth rule |
+
+GSE119365 is the only hematopoietic and only HRI-specific translatome. It is too shallow for the rule set here;
+it is the first candidate for re-quantification from raw reads.
+
+Not used: GSE273599/600/601 (RNA-only Dmr-PERK time and dose series; needed for the late transcriptional phase,
+which is not modelled), GSE307624 (ATAC tracks), GSE174764 (unreplicated doses), GSE248724/5 (basal eIF2α-S51A).
 
 ## Risks
-| Risk | Consequence | Handling in code |
+| Risk | Consequence | Handling |
 |---|---|---|
-| No direct TET2 × ISR translatome | `I_TE` unidentified | M1 labels it an assumption; M2 output carries "not validated" + extrapolation flag |
-| ISR translation data are from cell lines/fibroblasts | transfer to HSC is an extrapolation | held-out-cell-type split; `extrapolation_flag` when HSC state lies outside training range |
-| Stressors are pleiotropic (Tg, arsenite) | signature mixes ISR and non-ISR effects | stressor class tracked; canonical vs pleiotropic reported separately; ISRIB-reversible component preferred |
-| Dose not commensurable across studies | dose ↔ responsiveness confound (see identifiability memo) | both `estimated` and `metadata` dose runs; sensitivity reported |
-| Pooled/technical replicates in TET2 sets | false precision | one column = one independent replicate; no df → error |
-| Cell-composition shifts in TET2 samples | per-cell vs composition effects conflated | compartment-wise pseudobulk; composition exported separately |
-| Licences unread | reuse terms unknown | manifest `license` column says so; no data redistributed in this repo |
+| No TET2 × ISR translatome | `I_TE` unidentified | not estimated; M1 states it as an assumption |
+| Only 3 ISR-engaged contexts, all non-hematopoietic cell lines | genome-wide transfer unsupported; M2 unfit | engagement gate; M2 gated off; predictions limited to a core set |
+| Reference set both gates contexts and is predicted | partly circular for those genes | flagged per row; ISRIB reversal is independent evidence |
+| TET2 studies disagree | no consensus basal state | leave-heaviest-study-out replication rule |
+| Small n (2–4), mixed platforms | unstable variance | moderated statistics; one column = one biological replicate |
+| Legacy annotations, cross-species mapping | gene loss | one-to-one orthologs only (16,307 kept; 5,745 ambiguous pairs dropped) |
+| Licences | reuse terms not individually checked | nothing redistributed; `make public` re-downloads |
+| Processed counts only | no footprint-length, periodicity or rRNA QC | stated in QC table |
