@@ -1,0 +1,4 @@
+scheme,pearson,rmse,families_split_across_folds
+random_gene_split,0.7755194463377784,0.30638270507751114,112
+family_grouped_split,0.7755524967906332,0.306360515721261,0
+paralog_copy_upper_bound(genes with paralogs only),0.9214474446533866,0.20942547117455404,293

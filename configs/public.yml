@@ -1,0 +1,11 @@
+# Real-data run. Contingent on `make download-processed` succeeding (see docs/data_audit.md).
+run_name: public
+data_root: data/processed/public
+target_compartment: HSC
+state_programs: [eif2_ternary_complex, ribosome_biogenesis, proliferation, heme_iron]
+reference_program: isr_uorf_targets
+intensity_source: estimated
+isr_intensities: {low: 0.5, moderate: 1.0, high: 1.5}
+n_boot: 200
+n_mc: 1000
+seed: 0

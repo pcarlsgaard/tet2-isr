@@ -1,0 +1,13 @@
+gene,genotype,isr,M,TE,S
+A,WT,basal,10.0,1.0,10.0
+A,WT,high,10.0,2.0,20.0
+A,TET2,basal,20.0,1.0,20.0
+A,TET2,high,20.0,2.0,40.0
+B,WT,basal,40.0,1.0,40.0
+B,WT,high,40.0,0.5,20.0
+B,TET2,basal,40.0,1.0,40.0
+B,TET2,high,40.0,0.5,20.0
+"pathway{A,B}",TET2,basal,60.0,1.0,60.0
+"pathway{A,B}",TET2,high,60.0,1.0,60.0
+"pathway{A,B}",WT,basal,50.0,1.0,50.0
+"pathway{A,B}",WT,high,50.0,0.8,40.0

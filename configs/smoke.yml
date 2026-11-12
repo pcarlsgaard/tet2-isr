@@ -1,0 +1,12 @@
+# Synthetic demonstration run. No external downloads.
+run_name: smoke
+data_root: data/processed/smoke
+synthetic: {seed: 7, n_genes: 1500, null_world: false}
+target_compartment: HSC
+state_programs: [tc_availability, ribosome_biogenesis, proliferation]
+reference_program: isr_uorf_targets          # anchors data-driven ISR intensity
+intensity_source: estimated                  # estimated | metadata  (both are always run for the genotype prediction)
+isr_intensities: {low: 0.5, moderate: 1.0, high: 1.5}   # multiples of the mean training-context intensity
+n_boot: 40
+n_mc: 300
+seed: 0
