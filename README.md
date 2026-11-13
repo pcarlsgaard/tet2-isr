@@ -50,6 +50,9 @@ make public           # download processed files (1.4 GB incl. reference), build
 Stages can be run singly with `CONFIG=configs/public.yml` (`analyze-isr`, `analyze-tet2`, `fit-baselines`,
 `evaluate`, `report`).
 
+## Working in Docker / VS Code
+Step-by-step for saving, closing, reopening and syncing to GitHub and your Mac: `docs/dev_environment.md`.
+
 ## Layout
 
 ```
