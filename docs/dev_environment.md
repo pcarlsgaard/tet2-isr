@@ -45,18 +45,32 @@ cd /workspaces/typescript-node/tet2-isr
 git status                        # what changed
 git add -A
 git commit -m "describe what you did"
-git push origin claude/new-session-tlbo43     # or your current branch: git branch --show-current
+git push origin HEAD                          # pushes the branch you are on
 ```
 
 Check it worked: open https://github.com/pcarlsgaard/tet2-isr and look for your commit.
 
-If a push is rejected, run `git pull --rebase origin <branch>` first, then push again.
+`main` is the default branch and is protected (pull request required, no force-push, no deletion). Do your work on a
+branch and merge through a pull request:
+
+```bash
+git checkout main && git pull origin main
+git checkout -b my-change                     # one branch per task
+# ...work, commit...
+git push -u origin my-change
+gh pr create --fill                           # then review and merge on GitHub, or: gh pr merge --squash
+git checkout main && git pull origin main
+```
+
+The repo is public: do not commit unpublished or patient-derived data, tokens, or anything you would not post.
+
+If a push is rejected, run `git pull --rebase origin main` first, then push again.
 
 ## 3. Close everything and free memory
 
 Docker Desktop's background VM holds memory while it runs, even if the container is idle.
 
-1. Save to GitHub (section 2). Confirm `git status` shows nothing uncommitted and `git log origin/<branch>..HEAD` is empty.
+1. Save to GitHub (section 2). Confirm `git status` shows nothing uncommitted and `git log origin/main..HEAD` is empty (or your branch is pushed).
 2. VS Code: **File → Close Remote Connection** (this stops the container).
 3. Menu bar whale icon → **Quit Docker Desktop**. Memory is released at once. The volume is kept.
 
@@ -71,7 +85,7 @@ The full pipeline fits in that.
 3. Terminal:
    ```bash
    cd /workspaces/typescript-node/tet2-isr
-   git pull origin <branch>      # in case you worked from the Mac
+   git pull origin main          # in case you worked from the Mac
    make test                     # 23 tests, a few seconds
    ```
    If `make test` says the venv is missing: `make setup`.
@@ -85,15 +99,14 @@ On the **Mac** terminal (once):
 ```bash
 git clone https://github.com/pcarlsgaard/tet2-isr.git ~/tet2-isr
 cd ~/tet2-isr
-git checkout claude/new-session-tlbo43
 ```
 
 Then, from either place:
 
 ```bash
-git pull origin <branch>          # before you start
+git pull origin main              # before you start
 # ...work...
-git add -A && git commit -m "..." && git push origin <branch>
+git add -A && git commit -m "..." && git push origin HEAD
 ```
 
 Pull before starting, and avoid editing the same branch in both places at the same time.
